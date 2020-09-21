@@ -1,0 +1,44 @@
+:root {
+    --logo-height: 60px;
+    --logo-width: 140px;
+    --logo-bar-bottom-padding: 0.5rem;
+}
+
+.logo {
+    height: var(--logo-height);
+    width: var(--logo-width);
+    margin-right: 0.5rem;
+    float: right;
+}
+.logo,
+h2,
+h4
+{
+    display: inline-block; margin:0;
+}
+
+h2 {
+    margin-top:0.9rem;
+
+}
+
+h4 {
+    float:right;
+    margin-top:1rem;
+    margin-right: 3rem;
+}
+
+.logo-bar {
+    height: calc(var(--logo-height) + var(--logo-bar-bottom-padding));
+    padding-bottom: var(--logo-bar-bottom-padding);
+}
+
+label {
+    display: inline-block;
+    width: calc(100% - var(--logo-width) - 1rem);
+}
+
+input {
+    display: inline-block;
+    width: 80%;
+}
