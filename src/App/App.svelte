@@ -66,10 +66,16 @@
         return {tempWorksheet, isValid};
     }
 
-    function handleSaveWorksheetClicked() {
+    function saveWorksheetToLocalStorage()
+    {
         let blob = new Blob([JSON.stringify(worksheet, null, 2)], {type: 'text/plain;charset=utf-8'});
         ls.save(suffix, worksheet);
         showSnackBar('Worksheet saved to local storage.');
+        return blob;
+    }
+
+    function handleSaveWorksheetClicked() {
+        let blob=saveWorksheetToLocalStorage();
         if (saveAlsoDownloads) {
             setTimeout(() => {
                 let fileName = `${worksheet.name}.${file_ext}`;
@@ -82,6 +88,13 @@
     function handleLoadWorksheetClicked() {
         showLoadPane = true;
         disabled = 'disabled';
+    }
+
+    function handleSortClicked() {
+        worksheet.stunts=[...worksheet.stunts].sort((a,b)=> {
+            if (a.name.length === 0 || a.name === "" || a.name === null) return 1;
+            return a.name > b.name ? 1 : -1;
+        });
     }
 
     function handleNewWorksheetClicked() {
@@ -97,7 +110,7 @@
             // e.target.result should contain the text
             try {
                 let text = e.target.result;
-                let worksheet = JSON.parse(text);
+                worksheet = JSON.parse(text);
                 if (validateWorksheet(worksheet)) {
                     setTimeout(() => showSnackBar("Worksheet loaded."), 250);
                     worksheet = worksheet;
@@ -146,8 +159,11 @@
 </style>
 
 <svelte:head>
-    <title>{app_name}</title>
-
+    {#if !!worksheet && !!worksheet.name}
+        <title>{worksheet.name} - {app_name}</title>
+    {:else}
+        <title>{app_name}</title>
+    {/if}
     <!-- Your application must load the Roboto and Material Icons fonts. -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
@@ -167,8 +183,12 @@
             <label><strong>Page Count: </strong></label>
             <input type="number" min="1" max="99" bind:value={worksheet.pageCount} />
         </div>
+        <mwc-icon-button icon="sort" slot="actionItems" on:click={handleSortClicked}
+                         {disabled}>
+        </mwc-icon-button>
         <mwc-icon-button icon="note_add" slot="actionItems" on:click={handleNewWorksheetClicked}
-                         {disabled}></mwc-icon-button>
+                         {disabled}>
+        </mwc-icon-button>
         {#if showLoadPane}
             <mwc-icon-button icon="cancel" slot="actionItems" on:click={hideLoadPane}></mwc-icon-button>
         {:else}

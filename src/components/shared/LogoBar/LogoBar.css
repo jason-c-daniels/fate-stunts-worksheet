@@ -41,4 +41,6 @@ label {
 input {
     display: inline-block;
     width: 80%;
+    font-weight: bold;
+    font-style: italic;
 }
